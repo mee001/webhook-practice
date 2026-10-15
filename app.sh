@@ -2,4 +2,4 @@
 echo "Hello from webhook-practice - mee001"
 echo "Date: $(date)"
 echo "App executed successfully!"
-webhook test successful using ngrok
+echo "webhook test successful using ngrok"
