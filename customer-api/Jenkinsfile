@@ -1,38 +1,57 @@
 pipeline {
     agent any
+
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'prod'], description: 'Select deployment environment')
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checkout: Getting customer-api source code'
+                echo 'Checkout stage: Checking out source-code from SCM...'
             }
         }
+
         stage('Build') {
             steps {
                 script {
+                    // Task 2: GROOVY Variables definition
                     def appName = "customer-api"
-                    def appVersion = "1.0.0"
-                    echo "Building ${appName} v${appVersion}"
-                    def envs = ['dev', 'qa', 'prod']
-                    envs.each { e -> echo "Processing environment: ${e}" }
+                    def version = "1.0.0"
+
+                    echo "Application name: ${appName}"
+                    echo "Version: ${version}"
+                    echo "Selected Environment (from parameter): ${params.ENVIRONMENT}"
+
+                    // Task 4: Process multiple environments in a GROOVY list.
+                    def environments = ['dev', 'qa', 'prod']
+                    environments.each { envItem ->
+                        echo "Processing environment: ${envItem}"
+                    }
                 }
             }
         }
+
         stage('Test') {
             steps {
-                echo 'Test: Tests have started'
+                echo 'Test stage: Tests have started...'
             }
         }
+
         stage('Deploy') {
             steps {
                 script {
-                    def env = params.ENVIRONMENT ?: 'dev'
-                    echo "Deploying to ${env}"
-                    if (env == 'dev') {
-                        echo 'Development deployment started'
-                    } else if (env == 'qa') {
-                        echo 'QA deployment started'
+                    // Task 5: Use of PARAMETERS for passing values.
+                    def selectedEnv = params.ENVIRONMENT
+
+                    if (selectedEnv == 'dev') {
+                        echo 'Development deployment started.'
+                    } else if (selectedEnv == 'qa') {
+                        echo 'QA deployment started.'
+                    } else if (selectedEnv == 'prod') {
+                        echo 'Production deployment requires approval.'
                     } else {
-                        echo 'Production deployment requires approval'
+                        error("Unknown environment: ${selectedEnv}. Pipeline failed.")
                     }
                 }
             }
