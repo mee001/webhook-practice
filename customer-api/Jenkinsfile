@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checkout: Getting customer-api source code'
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    def appName = "customer-api"
+                    def appVersion = "1.0.0"
+                    echo "Building ${appName} v${appVersion}"
+                    def envs = ['dev', 'qa', 'prod']
+                    envs.each { e -> echo "Processing environment: ${e}" }
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Test: Tests have started'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    def env = params.ENVIRONMENT ?: 'dev'
+                    echo "Deploying to ${env}"
+                    if (env == 'dev') {
+                        echo 'Development deployment started'
+                    } else if (env == 'qa') {
+                        echo 'QA deployment started'
+                    } else {
+                        echo 'Production deployment requires approval'
+                    }
+                }
+            }
+        }
+    }
+}
